@@ -92,6 +92,11 @@ jane@company.com
    go test ./...
    ```
 
-3. **Open a PR** – Follow the existing code style, update documentation, and add tests for new features.
+3. **Run all checks** (tests, vet, fmt)  
+   ```bash
+   make check
+   ```
+
+4. **Open a PR** – Follow the existing code style, update documentation, and add tests for new features.
 
 ---
