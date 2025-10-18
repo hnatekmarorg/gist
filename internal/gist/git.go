@@ -19,7 +19,7 @@ func GetGitPath() string {
 
 // RunGit runs a git command and returns trimmed stdout.
 func RunGit(args ...string) (string, error) {
-	cmd := exec.Command(getGitPath(), args...)
+	cmd := exec.Command(GetGitPath(), args...)
 	out, err := cmd.Output()
 	if err != nil {
 		// If git writes to stderr (e.g., when key not found), capture that.
@@ -33,7 +33,7 @@ func RunGit(args ...string) (string, error) {
 
 // IsGitRepo checks if the current directory is inside a git repository.
 func IsGitRepo() (bool, string) {
-	out, err := runGit("rev-parse", "--show-toplevel")
+	out, err := RunGit("rev-parse", "--show-toplevel")
 	if err != nil {
 		return false, ""
 	}
