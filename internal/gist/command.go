@@ -1,4 +1,4 @@
-package main
+package gist
 
 import (
 	"bufio"
@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-// commandList prints all configured profiles.
-func commandList(cfg Config) {
+// CommandList prints all configured profiles.
+func CommandList(cfg Config) {
 	fmt.Println("available profiles:")
 	for _, p := range cfg.Profiles {
 		// Use a bullet for each profile.
@@ -18,27 +18,27 @@ func commandList(cfg Config) {
 	}
 }
 
-// commandInfo shows the current profile for the repository or globally.
-func commandInfo(cfg Config) {
+// CommandInfo shows the current profile for the repository or globally.
+func CommandInfo(cfg Config) {
 	// Determine if we are inside a repo.
-	inRepo, _ := isGitRepo()
+	inRepo, _ := gist.IsGitRepo()
 	var nameVal, emailVal string
 	var err error
 	if inRepo {
-		nameVal, err = runGit("config", "user.name")
+		nameVal, err = gist.RunGit("config", "user.name")
 		if err != nil {
 			nameVal = ""
 		}
-		emailVal, err = runGit("config", "user.email")
+		emailVal, err = gist.RunGit("config", "user.email")
 		if err != nil {
 			emailVal = ""
 		}
 	} else {
-		nameVal, err = runGit("config", "--global", "user.name")
+		nameVal, err = gist.RunGit("config", "--global", "user.name")
 		if err != nil {
 			nameVal = ""
 		}
-		emailVal, err = runGit("config", "--global", "user.email")
+		emailVal, err = gist.RunGit("config", "--global", "user.email")
 		if err != nil {
 			emailVal = ""
 		}
@@ -67,9 +67,9 @@ func commandInfo(cfg Config) {
 	}
 }
 
-// commandSet activates a profile for the current repository.
-func commandSet(cfg Config, profileName string) error {
-	p := findProfile(&cfg, profileName)
+// CommandSet activates a profile for the current repository.
+func CommandSet(cfg Config, profileName string) error {
+	p := gist.FindProfile(&cfg, profileName)
 	if p == nil {
 		return fmt.Errorf("profile %s not found", profileName)
 	}
@@ -79,14 +79,14 @@ func commandSet(cfg Config, profileName string) error {
 		return errors.New("not inside a git repository")
 	}
 	// Set local git config values.
-	if _, err := runGit("config", "user.name", p.Username); err != nil {
+		if _, err := gist.RunGit("config", "user.name", p.Username); err != nil {
 		return fmt.Errorf("failed to set user.name: %w", err)
 	}
-	if _, err := runGit("config", "user.email", p.Email); err != nil {
+		if _, err := gist.RunGit("config", "user.email", p.Email); err != nil {
 		return fmt.Errorf("failed to set user.email: %w", err)
 	}
 	if p.SigningKey != "" {
-		if _, err := runGit("config", "user.signingkey", p.SigningKey); err != nil {
+		if _, err := gist.RunGit("config", "user.signingkey", p.SigningKey); err != nil {
 			// Non‑fatal, continue.
 			fmt.Fprintf(os.Stderr, "warning: failed to set signingkey: %v\n", err)
 		}
@@ -95,8 +95,8 @@ func commandSet(cfg Config, profileName string) error {
 	return nil
 }
 
-// commandAdd interactively adds a new profile.
-func commandAdd(cfg *Config) error {
+// CommandAdd interactively adds a new profile.
+func CommandAdd(cfg *Config) error {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter profile name: ")
 	name, err := reader.ReadString('\n')
@@ -133,8 +133,8 @@ func commandAdd(cfg *Config) error {
 	return nil
 }
 
-// commandRemove deletes a profile from the config.
-func commandRemove(cfg *Config, name string) error {
+// CommandRemove deletes a profile from the config.
+func CommandRemove(cfg *Config, name string) error {
 	idx := -1
 	for i, p := range cfg.Profiles {
 		if p.Name == name {

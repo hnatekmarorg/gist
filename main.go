@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+
+	"github.com/Hnatekmar/gist/internal/gist"
 )
 
 // Version of the application.
@@ -38,29 +40,29 @@ func main() {
 		printHelp()
 		return
 	}
-	configPath := getConfigPath()
+	configPath := gist.GetConfigPath()
 	// Load configuration; for commands that don't need config, we may ignore errors.
-	cfg, cfgErr := loadConfig(configPath)
+	cfg, cfgErr := gist.LoadConfig(configPath)
 
 	switch args[0] {
-	case "init":
-		if err := initConfig(configPath); err != nil {
-			fmt.Fprintf(os.Stderr, "Error initializing config: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Config initialized at", configPath)
+		case "init":
+			if err := gist.InitConfig(configPath); err != nil {
+				fmt.Fprintf(os.Stderr, "Error initializing config: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("Config initialized at", configPath)
 	case "list":
 		if cfgErr != nil {
 			fmt.Fprintf(os.Stderr, "Failed to load config: %v\n", cfgErr)
 			os.Exit(1)
 		}
-		commandList(cfg)
+		gist.CommandList(cfg)
 	case "info":
 		if cfgErr != nil {
 			fmt.Fprintf(os.Stderr, "Failed to load config: %v\n", cfgErr)
 			os.Exit(1)
 		}
-		commandInfo(cfg)
+		gist.CommandInfo(cfg)
 	case "set":
 		if len(args) < 2 {
 			fmt.Fprintln(os.Stderr, "Usage: gist set <profile>")
@@ -70,24 +72,24 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Failed to load config: %v\n", cfgErr)
 			os.Exit(1)
 		}
-		if err := commandSet(cfg, args[1]); err != nil {
+		if err := gist.CommandSet(cfg, args[1]); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
-	case "add":
-		if cfgErr != nil {
-			// If config doesn't exist, start with empty config.
-			cfg = Config{}
-		}
-		if err := commandAdd(&cfg); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
-		}
-		// Save config after adding.
-		if err := saveConfig(configPath, cfg); err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to save config: %v\n", err)
-			os.Exit(1)
-		}
+		case "add":
+			if cfgErr != nil {
+				// If config doesn't exist, start with empty config.
+				cfg = gist.Config{}
+			}
+			if err := gist.CommandAdd(&cfg); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
+			}
+			// Save config after adding.
+			if err := gist.SaveConfig(configPath, cfg); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to save config: %v\n", err)
+				os.Exit(1)
+			}
 	case "remove":
 		if len(args) < 2 {
 			fmt.Fprintln(os.Stderr, "Usage: gist remove <profile>")
@@ -97,7 +99,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Failed to load config: %v\n", cfgErr)
 			os.Exit(1)
 		}
-		if err := commandRemove(&cfg, args[1]); err != nil {
+		if err := gist.CommandRemove(&cfg, args[1]); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}

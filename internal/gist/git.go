@@ -1,4 +1,4 @@
-package main
+package gist
 
 import (
 	"os"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-// getGitPath returns the git executable path.
-func getGitPath() string {
+// GetGitPath returns the git executable path.
+func GetGitPath() string {
 	if env := os.Getenv("GIST_GIT_PATH"); env != "" {
 		return env
 	}
@@ -17,8 +17,8 @@ func getGitPath() string {
 	return "git"
 }
 
-// runGit runs a git command and returns trimmed stdout.
-func runGit(args ...string) (string, error) {
+// RunGit runs a git command and returns trimmed stdout.
+func RunGit(args ...string) (string, error) {
 	cmd := exec.Command(getGitPath(), args...)
 	out, err := cmd.Output()
 	if err != nil {
@@ -31,8 +31,8 @@ func runGit(args ...string) (string, error) {
 	return strings.TrimSpace(string(out)), nil
 }
 
-// isGitRepo checks if the current directory is inside a git repository.
-func isGitRepo() (bool, string) {
+// IsGitRepo checks if the current directory is inside a git repository.
+func IsGitRepo() (bool, string) {
 	out, err := runGit("rev-parse", "--show-toplevel")
 	if err != nil {
 		return false, ""

@@ -1,4 +1,4 @@
-package main
+package gist
 
 import (
 	"os"
@@ -19,8 +19,8 @@ type Profile struct {
 	SigningKey string `yaml:"signingkey,omitempty"`
 }
 
-// getConfigPath returns the path to the configuration file.
-func getConfigPath() string {
+// GetConfigPath returns the path to the configuration file.
+func GetConfigPath() string {
 	// Check env var override.
 	if env := os.Getenv("GIST_CONFIG_PATH"); env != "" {
 		return env
@@ -34,8 +34,8 @@ func getConfigPath() string {
 	return filepath.Join(home, ".config", "gist", "config.yaml")
 }
 
-// loadConfig reads the configuration file.
-func loadConfig(path string) (Config, error) {
+// LoadConfig reads the configuration file.
+func LoadConfig(path string) (Config, error) {
 	var cfg Config
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -81,8 +81,8 @@ func loadConfig(path string) (Config, error) {
 	return cfg, nil
 }
 
-// saveConfig writes the configuration file.
-func saveConfig(path string, cfg Config) error {
+// SaveConfig writes the configuration file.
+func SaveConfig(path string, cfg Config) error {
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
@@ -100,8 +100,8 @@ func saveConfig(path string, cfg Config) error {
 	return os.WriteFile(path, []byte(sb.String()), 0o644)
 }
 
-// initConfig creates a default config if missing.
-func initConfig(path string) error {
+// InitConfig creates a default config if missing.
+func InitConfig(path string) error {
 	if _, err := os.Stat(path); err == nil {
 		// Already exists.
 		return nil
