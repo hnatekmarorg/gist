@@ -1,14 +1,14 @@
 # GIST – Git Identity Switching Tool
-> *“A quick gist of who you are – switch git personas in a snap.”*
+A quick gist of who you are – switch git personas in a snap.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Hnatekmar/gist?include_prereleases&sort=semver&color=brightgreen)](https://github.com/Hnatekmar/gist/releases)
 
-[GIST] is a tiny, cross‑platform CLI for managing **multiple Git user profiles** (name + email + optional GPG key) and switching between them on a per‑directory basis. No more manual `git config` gymnastics!
+GIST is a tiny, cross-platform CLI for managing multiple Git user profiles (name + email + optional GPG key) and switching between them on a per-directory basis. No more manual `git config` gymnastics!
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 GIST reads a YAML file (default: `$HOME/.config/gist/config.yaml`).  
 You can override the location with the environment variable `GIST_CONFIG_PATH`.
@@ -21,7 +21,7 @@ profiles:
     email: "jane@company.com"
     signingkey: "0xABCD1234"   # optional – GPG key used for signing commits
   - name: personal
-    username: "jane‑personal"
+    username: "jane-personal"
     email: "jane@example.com"
 ```
 
@@ -33,7 +33,7 @@ gist init               # creates ~/.config/gist/config.yaml with an example ent
 
 ---
 
-## 📚 Commands
+## Commands
 
 | Command | Synopsis | Example |
 |---------|----------|---------|
@@ -44,7 +44,7 @@ gist init               # creates ~/.config/gist/config.yaml with an example ent
 | `remove <profile>` | Delete a profile from the config file. | `gist remove personal` |
 | `init` | Create a default config file if none exists. | `gist init` |
 | `--version` | Print the version and exit. | `gist --version` |
-| `--help` | Show help for the top‑level command or a sub‑command (`gist help set`). | `gist --help` |
+| `--help` | Show help for the top-level command or a sub-command (`gist help set`). | `gist --help` |
 
 ### Sample usage
 
@@ -57,10 +57,10 @@ available profiles:
 $ gist info
 current profile (global):
   name: personal
-  user: jane‑personal <jane@example.com>
+  user: jane-personal <jane@example.com>
 
 $ gist set work
-✔️  Set profile “work” for repository /home/jane/project
+Set profile "work" for repository /home/jane/project
 $ git config user.name
 Jane Doe
 $ git config user.email
@@ -69,7 +69,7 @@ jane@company.com
 
 ---
 
-## 🌍 Environment variables
+## Environment variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -79,19 +79,19 @@ jane@company.com
 
 ---
 
-## 🛠️ Development & Contributions
+## Development & Contributions
 
-1. **Clone the repo**  
+1. Clone the repo  
    ```bash
-   git clone https://github.com/your-org/gist.git
+   git clone https://github.com/Hnatekmar/gist.git
    cd gist
    ```
 
-2. **Run the test suite**  
+2. Run the test suite  
    ```bash
    go test ./...
    ```
 
-3. **Open a PR** – Follow the existing code style, update documentation, and add tests for new features.
+3. Open a PR – Follow the existing code style, update documentation, and add tests for new features.
 
 ---
