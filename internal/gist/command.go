@@ -21,24 +21,24 @@ func CommandList(cfg Config) {
 // CommandInfo shows the current profile for the repository or globally.
 func CommandInfo(cfg Config) {
 	// Determine if we are inside a repo.
-	inRepo, _ := gist.IsGitRepo()
+	inRepo, _ := IsGitRepo()
 	var nameVal, emailVal string
 	var err error
 	if inRepo {
-		nameVal, err = gist.RunGit("config", "user.name")
+		nameVal, err = RunGit("config", "user.name")
 		if err != nil {
 			nameVal = ""
 		}
-		emailVal, err = gist.RunGit("config", "user.email")
+		emailVal, err = RunGit("config", "user.email")
 		if err != nil {
 			emailVal = ""
 		}
 	} else {
-		nameVal, err = gist.RunGit("config", "--global", "user.name")
+		nameVal, err = RunGit("config", "--global", "user.name")
 		if err != nil {
 			nameVal = ""
 		}
-		emailVal, err = gist.RunGit("config", "--global", "user.email")
+		emailVal, err = RunGit("config", "--global", "user.email")
 		if err != nil {
 			emailVal = ""
 		}
@@ -69,24 +69,24 @@ func CommandInfo(cfg Config) {
 
 // CommandSet activates a profile for the current repository.
 func CommandSet(cfg Config, profileName string) error {
-	p := gist.FindProfile(&cfg, profileName)
+	p := FindProfile(&cfg, profileName)
 	if p == nil {
 		return fmt.Errorf("profile %s not found", profileName)
 	}
 	// Ensure we are inside a git repository.
-	inRepo, repoRoot := isGitRepo()
+	inRepo, repoRoot := IsGitRepo()
 	if !inRepo {
 		return errors.New("not inside a git repository")
 	}
 	// Set local git config values.
-		if _, err := gist.RunGit("config", "user.name", p.Username); err != nil {
+		if _, err := RunGit("config", "user.name", p.Username); err != nil {
 		return fmt.Errorf("failed to set user.name: %w", err)
 	}
-		if _, err := gist.RunGit("config", "user.email", p.Email); err != nil {
+		if _, err := RunGit("config", "user.email", p.Email); err != nil {
 		return fmt.Errorf("failed to set user.email: %w", err)
 	}
 	if p.SigningKey != "" {
-		if _, err := gist.RunGit("config", "user.signingkey", p.SigningKey); err != nil {
+		if _, err := RunGit("config", "user.signingkey", p.SigningKey); err != nil {
 			// Non‑fatal, continue.
 			fmt.Fprintf(os.Stderr, "warning: failed to set signingkey: %v\n", err)
 		}

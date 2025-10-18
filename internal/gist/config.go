@@ -107,7 +107,7 @@ func InitConfig(path string) error {
 		return nil
 	}
 	cfg := Config{Profiles: []Profile{{Name: "example", Username: "Your Name", Email: "you@example.com"}}}
-	return saveConfig(path, cfg)
+	return SaveConfig(path, cfg)
 }
 
 // parseKeyValue parses a line like "key: value" (optionally prefixed with "-").
