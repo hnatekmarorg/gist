@@ -10,7 +10,9 @@
       "models": {
         "qwen-coder": {
           "name": "qwen-coder",
-          "tool_call": true
+          "tool_call": true,
+          "reasoning": false,
+          "max_output_tokens": 80000
         }
       }
     }
