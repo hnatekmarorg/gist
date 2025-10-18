@@ -240,34 +240,6 @@ func commandInfo(cfg Config) {
     }
 }
 
-// commandSet activates a profile for the current repository.
-func commandSet(cfg Config, profileName string) error {
-    p := findProfile(&cfg, profileName)
-    if p == nil {
-        return fmt.Errorf("profile %s not found", profileName)
-    }
-    // Ensure we are inside a git repository.
-    inRepo, repoRoot := isGitRepo()
-    if !inRepo {
-        return errors.New("not inside a git repository")
-    }
-    // Set local git config values.
-    if _, err := runGit("config", "user.name", p.Username); err != nil {
-        return fmt.Errorf("failed to set user.name: %w", err)
-    }
-    if _, err := runGit("config", "user.email", p.Email); err != nil {
-        return fmt.Errorf("failed to set user.email: %w", err)
-    }
-    if p.SigningKey != "" {
-        if _, err := runGit("config", "user.signingkey", p.SigningKey); err != nil {
-            // Non‑fatal, continue.
-            fmt.Fprintf(os.Stderr, "warning: failed to set signingkey: %v\n", err)
-        }
-    }
-    fmt.Printf("✔️  Set profile \"%s\" for repository %s\n", p.Name, repoRoot)
-    return nil
-}
-
 // commandAdd interactively adds a new profile.
 func commandAdd(cfg *Config) error {
     reader := bufio.NewReader(os.Stdin)
