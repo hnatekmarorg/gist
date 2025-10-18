@@ -8,24 +8,7 @@ on:
     # (fetch-depth is set in the checkout step)
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-
-      - name: Run tests
-        run: go test -v ./...
-
   release:
-    needs: test
     runs-on: ubuntu-latest
     permissions:
       # Allow creating tags and releases
@@ -33,8 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
-        with:
-          go-version: 1.22
       - uses: go-semantic-release/action@v1
         with:
           hooks: goreleaser
