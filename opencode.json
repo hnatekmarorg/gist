@@ -12,7 +12,9 @@
           "name": "qwen-coder",
           "tool_call": true,
           "reasoning": false,
-          "max_output_tokens": 80000
+          "options": {
+            "max_output_tokens": 80000
+          },
         }
       }
     }
