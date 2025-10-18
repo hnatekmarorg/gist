@@ -9,6 +9,8 @@ import (
     "os/exec"
     "path/filepath"
     "strings"
+
+    "gopkg.in/yaml.v2"
 )
 
 // Version of the application.
@@ -103,43 +105,11 @@ func loadConfig(path string) (Config, error) {
     if err != nil {
         return cfg, err
     }
-    lines := strings.Split(string(data), "\n")
-    var current *Profile
-    for _, line := range lines {
-        trimmed := strings.TrimSpace(line)
-        if trimmed == "" || strings.HasPrefix(trimmed, "#") {
-            continue
-        }
-        if strings.HasPrefix(trimmed, "profiles:") {
-            continue
-        }
-        key, value, ok := parseKeyValue(line)
-        if !ok {
-            continue
-        }
-        switch key {
-        case "name":
-            // start a new profile
-            p := Profile{Name: value}
-            cfg.Profiles = append(cfg.Profiles, p)
-            // set pointer to the newly added profile
-            current = &cfg.Profiles[len(cfg.Profiles)-1]
-        case "username":
-            if current != nil {
-                current.Username = value
-            }
-        case "email":
-            if current != nil {
-                current.Email = value
-            }
-        case "signingkey":
-            if current != nil {
-                current.SigningKey = value
-            }
-        default:
-            // ignore unknown keys
-        }
+    
+    if err := yaml.Unmarshal(data, &cfg); err != nil {
+        return cfg, err
     }
+    
     return cfg, nil
 }
 
@@ -149,17 +119,13 @@ func saveConfig(path string, cfg Config) error {
     if err := os.MkdirAll(dir, 0o755); err != nil {
         return err
     }
-    var sb strings.Builder
-    sb.WriteString("profiles:\n")
-    for _, p := range cfg.Profiles {
-        sb.WriteString("  - name: " + p.Name + "\n")
-        sb.WriteString("    username: \"" + p.Username + "\"\n")
-        sb.WriteString("    email: \"" + p.Email + "\"\n")
-        if p.SigningKey != "" {
-            sb.WriteString("    signingkey: \"" + p.SigningKey + "\"\n")
-        }
+    
+    data, err := yaml.Marshal(&cfg)
+    if err != nil {
+        return err
     }
-    return os.WriteFile(path, []byte(sb.String()), 0o644)
+    
+    return os.WriteFile(path, data, 0o644)
 }
 
 // initConfig creates a default config if missing.
