@@ -295,6 +295,41 @@ func commandRemove(cfg *Config, name string) error {
     return nil
 }
 
+// commandSet activates a profile for the current repository.
+func commandSet(cfg Config, name string) error {
+    profile := findProfile(&cfg, name)
+    if profile == nil {
+        return fmt.Errorf("profile %s not found", name)
+    }
+    
+    // Check if we're in a git repository
+    inRepo, repoPath := isGitRepo()
+    if !inRepo {
+        return errors.New("not in a git repository")
+    }
+    
+    // Set git config for the repository
+    _, err := runGit("-C", repoPath, "config", "user.name", profile.Username)
+    if err != nil {
+        return fmt.Errorf("failed to set user.name: %w", err)
+    }
+    
+    _, err = runGit("-C", repoPath, "config", "user.email", profile.Email)
+    if err != nil {
+        return fmt.Errorf("failed to set user.email: %w", err)
+    }
+    
+    if profile.SigningKey != "" {
+        _, err = runGit("-C", repoPath, "config", "user.signingkey", profile.SigningKey)
+        if err != nil {
+            return fmt.Errorf("failed to set user.signingkey: %w", err)
+        }
+    }
+    
+    fmt.Printf("Activated profile %s for repository %s\n", name, repoPath)
+    return nil
+}
+
 // printHelp displays usage information.
 func printHelp() {
     fmt.Println("Usage: gist <command> [args]")
