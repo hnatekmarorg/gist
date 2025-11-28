@@ -89,7 +89,7 @@ func main() {
 				fmt.Fprintf(os.Stderr, "Failed to save config: %v\n", err)
 				os.Exit(1)
 			}
-	case "remove":
+ 	case "remove":
 		if len(args) < 2 {
 			fmt.Fprintln(os.Stderr, "Usage: gist remove <profile>")
 			os.Exit(1)
